@@ -54,7 +54,7 @@ class App extends Component {
     const contract = require('truffle-contract')
     const cryptoTickets = contract(CryptoTicketsContract)
     cryptoTickets.setProvider(this.state.web3.currentProvider)
-    
+
     // Get accounts
     this.state.web3.eth.getAccounts((error, accounts) => {
       this.setState({account: accounts[0]})
@@ -71,17 +71,17 @@ class App extends Component {
           if (!error){
             //var eventInstance = this.getEventInstanceFromAddress(result.args.addr)
             //this.displayEvent(eventInstance)
-            //console.log(result)           
+            //console.log(result)
             //NOTE for now update all events
             this.displayAllEvents()
             this.updateTotalEventCount()
-            
 
-            
+
+
           } else {
             console.log("ERROR: "+error)
           }
-          
+
         })*/
 
         this.updateYourEventCount()
@@ -106,7 +106,7 @@ class App extends Component {
           this.state.cryptoTicketsInstance.events(i).then((result) => {
             console.log(result)
             this.displayEvent(this.getEventInstanceFromAddress(result))
-            
+
           })
         }
       })  
@@ -119,9 +119,10 @@ class App extends Component {
       console.log(error)
     }).then((result1) =>{
       description += result1
-      return eventInstance.totalTickets()
-    }).catch(error => {
-      console.log(error)
+      return eventInstance.totalTickets().catch(error => {
+        console.log(error)
+        return error
+      })
     }).then((result2) => {
       description += ", totalTickets: "+result2.toNumber() + "}"
       this.state.events.push(description)
@@ -145,7 +146,7 @@ class App extends Component {
   }
 
   updateYourEventCount(){
-    if (this.state.cryptoTicketsInstance !== null){      
+    if (this.state.cryptoTicketsInstance !== null){
       this.state.cryptoTicketsInstance.getEventCountForCreator(this.state.address).catch(error =>{
         //This is likely because there is no array for the .length
         //console.log(error)
@@ -180,14 +181,14 @@ class App extends Component {
         <main className="container">
           <div className="pure-g">
             <div className="pure-u-1-1">
-              
+
               <h1>Crypto Tickets!</h1>
               <p>You are: {this.state.account}</p>
               <p>You manage {this.state.yourEventCount}</p>
               <p>The total number of events is: {this.state.eventCount}</p>
               <button onClick={this.createNewEvent}>New Event</button>
               <button onClick={this.setFee}>Set Fee</button>
-              <div id="events"> 
+              <div id="events">
                 {this.state.events.map((show,i) => {
                   return ( <p key={i}> {show} </p>)
                 })}
